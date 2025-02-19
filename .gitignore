@@ -1,3 +1,6 @@
+# Custom
+src/app/debug/
+
 # Logs
 logs
 *.log
