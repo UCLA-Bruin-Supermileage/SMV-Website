@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 
 const ALLOW_FREE_MOVE = true;
-const RENDER_TEST_CUBE = true;
+const RENDER_TEST_CUBE = false;
 
 function generateScene(mountRef) {
     // Set up the scene, camera, and renderer
@@ -15,6 +15,7 @@ function generateScene(mountRef) {
     );
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     mountRef.current.appendChild(renderer.domElement);
     var carModel;
 
@@ -32,6 +33,7 @@ function generateScene(mountRef) {
         object.position.set(0, 0, 0); // Adjust position if needed
         scene.add(object);
         carModel = object;
+        carModel.matrixAutoUpdate = false;
     }, undefined, (error) => {
         console.error('Error loading model:', error);
     });
@@ -122,21 +124,47 @@ function generateScene(mountRef) {
         scene.add(cube);
     }
     
-    // car parameters
-
-
-
-
     // Animation function
+    let time = 0;
+    let lastFrameTime = performance.now();
+
     const animate = () => {
         requestAnimationFrame(animate);
         updateMovement();  // update camera position and rotation
+
+        const curTime = performance.now();
+        const deltaTime = (curTime - lastFrameTime) / 1000;
+        lastFrameTime = curTime;
+
+        time += deltaTime;
+
         if (carModel) {
+            var matrix = new THREE.Matrix4();
+            console.log(matrix)
+            const translation_base = new THREE.Matrix4().makeTranslation(-0.6, 0, -1.5);  // base: moves center of car to origin
+            const translation_O = new THREE.Matrix4().makeTranslation(-0.6, 0, -1.5);  // move center to origin
+            const rotation = new THREE.Matrix4().makeRotationY(time);  // rotate the car
+            const translation_I = new THREE.Matrix4().makeTranslation(0.6, 0, 1.5);  // inverse of translation_O
+            matrix.premultiply(translation_O);
+            matrix.premultiply(rotation);  
+            matrix.premultiply(translation_I);
+            matrix.premultiply(translation_base);
+
+            matrix.multiplyMatrices(matrix, new THREE.Matrix4().makeScale(0.001, 0.001, 0.001));
+            carModel.matrix.copy(matrix);
             // carModel.rotation.y += 0.01;
         }
         renderer.render(scene, camera);
     };
     animate();
+
+    // handle resizing
+    const onWindowResize = () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener('resize', onWindowResize);
 
     // Cleanup function
     return () => {
