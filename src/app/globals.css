@@ -19,3 +19,13 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.render-box {
+    width: 50vw;
+    height: 50vh;
+    border: 0px solid black;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

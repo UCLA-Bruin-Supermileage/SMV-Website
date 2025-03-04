@@ -1,5 +1,6 @@
 import Image from "next/image";
-import Link from 'next/link'
+import Link from 'next/link';
+import Scene from './render/page';
 
 export default function Home() {
   return (
@@ -15,6 +16,9 @@ export default function Home() {
         <div>
           Go to <Link className = "text-2xl" className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600" href = "https://smv.seas.ucla.edu/info/">Documentation</Link>!
         </div> 
+        <div className="render-box">
+            <Scene/>
+        </div>
       </div> 
     </div>
   );
