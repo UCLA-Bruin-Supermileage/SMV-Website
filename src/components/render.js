@@ -1,23 +1,25 @@
 import * as THREE from 'three';
 import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 
-const ALLOW_FREE_MOVE = true;
+const ALLOW_FREE_MOVE = false;
 const RENDER_TEST_CUBE = false;
 
-function generateScene(mountRef) {
+function generateScene(containerRef) {
     // Set up the scene, camera, and renderer
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
         75,
-        window.innerWidth / window.innerHeight,
+        1,
         0.1,
         1000
     );
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true});
     renderer.setPixelRatio(window.devicePixelRatio);
-    mountRef.current.appendChild(renderer.domElement);
+    containerRef.current.appendChild(renderer.domElement);
     var carModel;
+
+    // background
+    scene.background = null; // Change to desired color
 
     // light sources
     const ambientLight = new THREE.AmbientLight(0x404040);
@@ -152,26 +154,30 @@ function generateScene(mountRef) {
 
             matrix.multiplyMatrices(matrix, new THREE.Matrix4().makeScale(0.001, 0.001, 0.001));
             carModel.matrix.copy(matrix);
-            // carModel.rotation.y += 0.01;
         }
         renderer.render(scene, camera);
     };
     animate();
 
-    // handle resizing
-    const onWindowResize = () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', onWindowResize);
+    // fit the container the canvas is in, and deal with resizes
+    const resizeObserver = new ResizeObserver(() => {
+        if (containerRef.current) {
+            const {clientWidth, clientHeight} = containerRef.current;
+            camera.aspect = clientWidth/clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(clientWidth, clientHeight);
+        }
+    });
+
+    resizeObserver.observe(containerRef.current)
 
     // Cleanup function
     return () => {
         renderer.dispose();
+        resizeObserver.disconnect();
     };
 }
 
-export default function initializeScene(mountRef) {
-    return generateScene(mountRef);
-}
+export default function initializeScene(containerRef) {
+    return generateScene(containerRef);
+}   
