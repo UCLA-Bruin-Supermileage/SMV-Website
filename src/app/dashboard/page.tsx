@@ -1,5 +1,8 @@
-import SMVSocket from "@/components/SMVSocket/websocket"
-
+import MinimalMqttSpeed from '@/components/mqtt/MQTTClient';
 export default function DashBoard() {
-    return <h1>Hello Next.js!</h1>
+    return (
+        <div>
+          Current Speed: <MinimalMqttSpeed /> MPH
+        </div>
+      );
   }
