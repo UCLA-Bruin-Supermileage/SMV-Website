@@ -39,7 +39,7 @@ export default function MinimalMqttSpeed() {
           } else if (!isNaN(Number(parsed))) {
             setSpeed(Number(parsed));
           }
-        } catch (e) {
+        } catch {
           const numValue = Number(message.toString());
           if (!isNaN(numValue)) {
             setSpeed(numValue);
