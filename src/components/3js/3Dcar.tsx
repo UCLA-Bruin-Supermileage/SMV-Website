@@ -1,5 +1,5 @@
 'use client';
-import initializeScene from "../../components/render.js"
+import initializeScene from './render';
 import React from 'react';
 
 import { useEffect, useRef } from 'react';

@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import Scene from './render/page';
+// import Scene from './render/page';
+import Scene from "@/components/3js/3Dcar"
 
 export default function Home() {
   return (
