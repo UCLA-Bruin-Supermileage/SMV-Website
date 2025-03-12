@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "../components/mqtt/speedometer.module.css";
+/* @import "../components/mqtt/speedometer.module.css"; */
 
 :root {
   --background: #ffffff;
