@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react';
 import GetMqttSpeed from '@/components/mqtt/MQTTClient';
+import Link from 'next/link';
 
 export default function SpeedometerPage() {
   const speed = GetMqttSpeed();
@@ -250,6 +251,15 @@ export default function SpeedometerPage() {
       >
         {/* Header with fixed height */}
         <div className="flex justify-between items-center px-3 py-2 sm:px-4 sm:py-3">
+          <Link href='/'>
+            <button className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-md text-xs sm:text-sm whitespace-nowrap ${
+                darkMode 
+                  ? 'bg-amber-500 text-white hover:bg-amber-600' 
+                  : 'bg-slate-800 text-white hover:bg-slate-900'
+              } transition-colors`}>
+                Back
+            </button>
+          </Link>
           <h1 className={`text-lg sm:text-xl md:text-2xl font-bold truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             MQTT Speedometer
           </h1>
