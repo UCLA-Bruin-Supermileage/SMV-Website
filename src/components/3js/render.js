@@ -142,7 +142,7 @@ function generateScene(containerRef) {
 
         if (carModel) {
             var matrix = new THREE.Matrix4();
-            console.log(matrix)
+            // console.log(matrix)
             const translation_base = new THREE.Matrix4().makeTranslation(-0.6, 0, -1.5);  // base: moves center of car to origin
             const translation_O = new THREE.Matrix4().makeTranslation(-0.6, 0, -1.5);  // move center to origin
             const rotation = new THREE.Matrix4().makeRotationY(time);  // rotate the car

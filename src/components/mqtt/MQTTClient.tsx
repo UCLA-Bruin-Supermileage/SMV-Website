@@ -1,9 +1,8 @@
-// components/MinimalMqttSpeed.tsx
 'use client'
 import { useEffect, useState } from 'react';
 import mqtt from 'mqtt';
 
-export default function MinimalMqttSpeed() {
+export default function GetMqttSpeed() {
   const [speed, setSpeed] = useState<number | null>(null);
   
   useEffect(() => {
