@@ -1,7 +1,7 @@
 // import Image from "next/image";
-import Link from 'next/link';
+// import Link from 'next/link';
 // import Scene from './render/page';
-import Scene from "@/components/3js/3Dcar"
+// import Scene from "@/components/3js/3Dcar"
 
 // export default function Home() {
 //   return (
@@ -104,7 +104,8 @@ import Scene from "@/components/3js/3Dcar"
 // }
 
 import React from 'react';
-import NavigationBar, { NavLink } from './navBar';
+import NavigationBar from './navBar';
+import { NavLink } from '../app/types';
 import MissionValuesChart from '../app/MissionValuesChart';
 import './globals.css'
 //import './App.css';

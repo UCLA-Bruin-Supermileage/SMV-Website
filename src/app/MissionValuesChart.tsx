@@ -1,8 +1,15 @@
 import React from 'react';
-import Image from "next/Image";
-import renewAble from "../../public/renewableEnergySymbol.jpg"
+import { ReactNode, HTMLAttributes } from 'react';
+import Image from "next/image";
+import renewAble from "../../public/renewableEnergySymbol.jpg";
+
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
+    children: ReactNode;
+    className?: string;
+  }
+
 // Custom Card components to replace shadcn/ui
-const Card = ({ children, className, style, ...props }) => {
+const Card = ({ children, className, style, ...props }: CardProps) => {
   return (
     <div 
       className={`bg-white rounded-lg border shadow-sm ${className || ''}`} 
@@ -14,7 +21,7 @@ const Card = ({ children, className, style, ...props }) => {
   );
 };
 
-const CardContent = ({ children, className, ...props }) => {
+const CardContent = ({ children, className, ...props }: CardProps) => {
   return (
     <div className={`p-6 ${className || ''}`} {...props}>
       {children}
