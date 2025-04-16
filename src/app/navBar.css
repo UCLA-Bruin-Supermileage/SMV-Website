@@ -1,0 +1,31 @@
+.navbar {
+    width: 100%;
+    background-color: #a0b11ec1;
+    position: fixed; /* Sticks to the top */
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+  
+  .nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  .nav-item {
+    margin: 0;
+  }
+  
+  .nav-link {
+    display: block;
+    padding: 1rem;
+    color: white;
+    text-decoration: none;
+    font-family: 'Roboto' , sans-serif;
+  }
+  
+  .nav-link:hover {
+    background-color: #575757;
+  }
