@@ -1,0 +1,40 @@
+name: Build and Push Docker image
+
+on:
+  push:
+    branches:
+      - main  # or your production branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write  # Required for publishing to GHCR
+      id-token: write  # Needed for GitHub OIDC authentication
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image name
+        id: vars
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository }}
+          echo "IMAGE_NAME=${IMAGE_NAME,,}" >> $GITHUB_ENV  # lowercase for GHCR
+
+      - name: Build Docker image
+        run: |
+          docker build -t $IMAGE_NAME .
+
+      - name: Push Docker image
+        run: |
+          docker push $IMAGE_NAME
