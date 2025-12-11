@@ -29,7 +29,7 @@ jobs:
       - name: Test Container Startup
         run: |
           echo "Starting container..."
-          docker run -d --name test-container -p 8080:80 smv-website:test
+          docker run -d --name test-container -p 3000:3000 smv-website:test
           
           # Wait 5-10 seconds for the web server to initialize
           sleep 10
@@ -41,6 +41,6 @@ jobs:
             exit 1
           fi
 
-          curl --fail http://localhost:8080 || exit 1
+          curl --fail http://localhost:3000 || exit 1
           
           echo "Success: Image built and started correctly."
