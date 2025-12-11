@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      security-events: write # For GitHub Security tab integration (optional)
-      issues: write          # To open an issue if bugs are found
+      security-events: write
+      packages: read # Required to pull from GHCR
 
     steps:
       - name: Log in to GitHub Container Registry
@@ -24,13 +24,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Convert image name to lowercase
+        run: |
+          # Bash string manipulation to lowercase the repo name
+          REPO_LOWER="${GITHUB_REPOSITORY,,}"
+          echo "IMAGE_NAME=ghcr.io/${REPO_LOWER}:latest" >> $GITHUB_ENV
+
       - name: Run Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMAGE_NAME }}
+          # Use the lowercased environment variable we just created
+          image-ref: ${{ env.IMAGE_NAME }} 
           format: 'table'
-          exit-code: '1'        # Fail the job if vulnerabilities are found
-          ignore-unfixed: true  # Don't fail on bugs that have no patch available
+          exit-code: '1'
+          ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
