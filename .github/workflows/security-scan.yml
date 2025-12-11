@@ -15,6 +15,7 @@ jobs:
       contents: read
       security-events: write
       packages: read # Required to pull from GHCR
+      issues: write
 
     steps:
       - name: Log in to GitHub Container Registry
