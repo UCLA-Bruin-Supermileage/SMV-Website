@@ -1,0 +1,51 @@
+name: Weekly Security Scan
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}:latest
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # For GitHub Security tab integration (optional)
+      issues: write          # To open an issue if bugs are found
+
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}
+          format: 'table'
+          exit-code: '1'        # Fail the job if vulnerabilities are found
+          ignore-unfixed: true  # Don't fail on bugs that have no patch available
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      # Create a GitHub Issue automatically if the scan fails
+      - name: Open Issue on Failure
+        if: failure()
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "CRITICAL: Security Vulnerability Detected in Production"
+          body: |
+            ### Security Scan Failed
+            New vulnerabilities (High/Critical) were detected in the production image: `${{ env.IMAGE_NAME }}`.
+            
+            **Action Required:**
+            1. Check the [Workflow Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
+            2. Run `npm audit fix` locally.
+            3. Rebuild and deploy a new image.

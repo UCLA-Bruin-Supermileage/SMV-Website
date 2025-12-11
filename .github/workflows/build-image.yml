@@ -1,19 +1,46 @@
-name: Docker Image CI
+name: Docker PR Validation
 
 on:
   pull_request:
     branches: [ "main" ]
 
+# Minimum permissions required
 permissions:
   contents: read
-  packages: write
+  packages: read 
+
 jobs:
-
-  build:
-
+  validate-build:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag smv-website --label "runnumber=${GITHUB_RUN_ID}"
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Build and Load
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: smv-website:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=min
+      # test if container starts
+      - name: Test Container Startup
+        run: |
+          echo "Starting container..."
+          docker run -d --name test-container -p 3000:3000 smv-website:test
+          
+          # Wait 5-10 seconds for the web server to initialize
+          sleep 10
+          
+          # Check if the container is still running (didn't crash)
+          if [ "$(docker inspect -f '{{.State.Running}}' test-container)" = "false" ]; then
+            echo "CRITICAL: Container crashed on startup!"
+            docker logs test-container
+            exit 1
+          fi
+
+          curl --fail http://localhost:3000 || exit 1
+          
+          echo "Success: Image built and started correctly."
