@@ -1,12 +1,12 @@
 name: Weekly Security Scan
 
 on:
-  schedule:
-    - cron: '0 8 * * 1'
+  # schedule:
+  #   - cron: '0 8 * * 1'
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository }}:latest
+  IMAGE_NAME: ghcr.io/${{ github.repository }}:0.69.3
 
 jobs:
   security-check:
