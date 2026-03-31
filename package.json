@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@sentry/nextjs": "^9.22.0",
+    "@sentry/nextjs": "^9.47.1",
     "mqtt": "^5.10.4",
     "next": "15.5.9",
     "react": "19.0.0",
